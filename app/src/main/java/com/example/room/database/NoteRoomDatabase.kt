@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database (entities = [Note::class], version=1)
 abstract class NoteRoomDatabase: RoomDatabase() {
-    abstract fun funnoteDao(): NoteDAO
+    abstract fun noteDao(): NoteDAO
 
     companion object {
         @Volatile

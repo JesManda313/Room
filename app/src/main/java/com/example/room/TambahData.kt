@@ -1,89 +1,58 @@
 package com.example.room
 
-import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.example.room.database.Note
 import com.example.room.database.NoteRoomDatabase
-import com.example.room.helper.DateHelper
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
+import com.example.room.helper.DateHelper.getCurrentDate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 class TambahData : AppCompatActivity() {
 
-    private lateinit var _etJudul: TextInputEditText
-    private lateinit var _etDeskripsi: TextInputEditText
-    private lateinit var _btnTambah: MaterialButton
-    private lateinit var _btnUpdate: MaterialButton
+    private lateinit var etJudul: EditText
+    private lateinit var etDeskripsi: EditText
+    private lateinit var btnTambah: Button
+    private lateinit var btnUpdate: Button
 
-    private val DB: NoteRoomDatabase by lazy {
-        NoteRoomDatabase.getDatabase(this)
-    }
-
-    private var tanggal: String = DateHelper.getCurrentDate()
-    private var iID: Int = 0
-    private var iAddEdit: Int = 0
+    private lateinit var db: NoteRoomDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tambah_data)
 
-        _etJudul = findViewById(R.id.etJudul)
-        _etDeskripsi = findViewById(R.id.etDeskripsi)
-        _btnTambah = findViewById(R.id.btnTambah)
-        _btnUpdate = findViewById(R.id.btnUpdate)
+        // inisialisasi DB di dalam onCreate (context sudah aman)
+        db = NoteRoomDatabase.getDatabase(this)
 
-        iID = intent.getIntExtra("noteId", 0)
-        iAddEdit = intent.getIntExtra("addEdit", 0)
+        etJudul = findViewById(R.id.etJudul)
+        etDeskripsi = findViewById(R.id.etDeskripsi)
+        btnTambah = findViewById(R.id.btnTambah)
+        btnUpdate = findViewById(R.id.btnUpdate)
 
-        if (iAddEdit == 0) { // Tambah Data
-            _btnTambah.visibility = View.VISIBLE
-            _btnUpdate.visibility = View.GONE
-            _etJudul.isEnabled = true
-        } else { // Edit Data
-            _btnTambah.visibility = View.GONE
-            _btnUpdate.visibility = View.VISIBLE
-            _etJudul.isEnabled = false
+        val tanggal : String  = getCurrentDate()
 
-            // Mengambil data lama di background (Coroutine)
-            CoroutineScope(Dispatchers.IO).async {
-                val noteItem: Note = DB.funnoteDao().getNote(iID)
-                _etJudul.setText(noteItem.judul)
-                _etDeskripsi.setText(noteItem.deskripsi)
-            }
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
         }
 
-        // --- Operasi Tambah Data (Create) ---
-        _btnTambah.setOnClickListener {
-            // Operasi database di background thread (Dispatchers.IO)
-            CoroutineScope(Dispatchers.IO).async {
-                DB.funnoteDao().insert(
-                    Note (
+        btnTambah.setOnClickListener {
+            // Use launch for operations that don't return a value
+            CoroutineScope(Dispatchers.IO).launch {
+                db.noteDao().insert(
+                    Note(
                         id = 0,
-                        judul = _etJudul.text.toString(),
-                        deskripsi = _etDeskripsi.text.toString(),
+                        judul = etJudul.text.toString(),
+                        deskripsi = etDeskripsi.text.toString(),
                         tanggal = tanggal
                     )
                 )
-                // Kembali ke halaman sebelumnya
-                finish()
-            }
-        }
-
-        // --- Operasi Edit Data (Update) ---
-        _btnUpdate.setOnClickListener {
-            // Operasi database di background thread (Dispatchers.IO)
-            CoroutineScope(Dispatchers.IO).async {
-                DB.funnoteDao().update(
-                    _etJudul.text.toString(),
-                    _etDeskripsi.text.toString(),
-                    iID
-                )
-                // Kembali ke halaman sebelumnya
-                finish()
             }
         }
     }

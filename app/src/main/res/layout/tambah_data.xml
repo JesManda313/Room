@@ -1,35 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:padding="20dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:id="@+id/main"
+    tools:context=".TambahData">
 
     <EditText
         android:id="@+id/etJudul"
+        android:hint="Judul"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Masukkan Judul"
-        android:layout_marginBottom="16dp" />
+        android:layout_height="wrap_content"/>
 
     <EditText
         android:id="@+id/etDeskripsi"
+        android:hint="Deskripsi"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Masukkan Deskripsi"
-        android:layout_marginBottom="24dp" />
+        android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/btnTambah"
+        android:text="Tambah"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Tambah Data"
-        android:layout_marginBottom="12dp" />
+        android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/btnUpdate"
+        android:text="Update"
+        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Update Data"
-        android:visibility="gone" />
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>
