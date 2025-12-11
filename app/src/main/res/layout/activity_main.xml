@@ -9,7 +9,6 @@
     android:id="@+id/main"
     >
 
-    <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvNotes"
         android:layout_width="0dp"
@@ -20,7 +19,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:padding="16dp"/>
 
-    <!-- Floating Action Button -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAdd"
         android:layout_width="wrap_content"

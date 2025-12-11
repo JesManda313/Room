@@ -12,6 +12,7 @@ import com.example.room.helper.DateHelper.getCurrentDate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext // Ditambahkan untuk withContext
 
 class TambahData : AppCompatActivity() {
 
@@ -26,7 +27,6 @@ class TambahData : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.tambah_data)
 
-        // inisialisasi DB di dalam onCreate (context sudah aman)
         db = NoteRoomDatabase.getDatabase(this)
 
         etJudul = findViewById(R.id.etJudul)
@@ -43,7 +43,6 @@ class TambahData : AppCompatActivity() {
         }
 
         btnTambah.setOnClickListener {
-            // Use launch for operations that don't return a value
             CoroutineScope(Dispatchers.IO).launch {
                 db.noteDao().insert(
                     Note(
@@ -53,6 +52,9 @@ class TambahData : AppCompatActivity() {
                         tanggal = tanggal
                     )
                 )
+                withContext(Dispatchers.Main) {
+                    finish()
+                }
             }
         }
     }
